@@ -1,29 +1,9 @@
 {
   "all_messages": [
     {
-      "sender": "2323",
-      "text": "2324",
-      "time": "02:25"
-    },
-    {
-      "sender": "2323",
-      "text": "",
-      "time": "02:25"
-    },
-    {
-      "sender": "2323",
-      "text": "dopkld",
-      "time": "02:25"
-    },
-    {
-      "sender": "2323",
-      "text": "dsfsdfsf",
-      "time": "02:25"
-    },
-    {
-      "sender": "2323",
-      "text": "",
-      "time": "02:25"
+      "sender": "Name",
+      "text": "Text",
+      "time": "Time"
     }
   ]
 }
