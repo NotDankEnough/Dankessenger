@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Skillbox Chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
 
     <!-- Подключение библиотеки jQuery-->
     <script
@@ -18,7 +19,7 @@
            $.get(
             "/get_messages",
             (data) => {
-                $("#chat_window").empty();
+                $("#message_box").empty();
                 var messages = data["messages"];
                 for (var i in messages) {
                     var message = messages[i];
@@ -26,10 +27,15 @@
                     var text = message["text"];
                     var time = message["time"];
                     console.log(name, text, time);
-                    var html = "<div> [<b> " + name + " </b>]: " + text + " <i>" + time + "</i> </div>";
+                    var html = `<p id="message_row">
+                        <span id="timestamp">[${time}]</span>
+                <span id="username">${name}</span>
+                says:
+                <span id="message">${text}</span>
+                        </p>`;
                     var div = $(html); // div = визуальный элемент с сообщением
 
-                    $("#chat_window").append(div);
+                    $("#message_box").append(div);
                 }
             }
            );
@@ -37,8 +43,8 @@
 
         // Отправка сообщения
         function sendMessage() {
-            var name = $("#name").val(); // Кладем текст из поля "name" в переменную
-            var text = $("#text").val();
+            var name = $("#username_input").val(); // Кладем текст из поля "name" в переменную
+            var text = $("#message_input").val();
             $.get("/send_message", { "sender" : name, "text" : text});
 
             $("#text").val("");
@@ -47,7 +53,7 @@
         // При загрузке страницы
         $(() => {
            // При нажатии клавиш в поле текст
-           $("#text").on("keypress", (event) => {
+           $("#message_input").on("keypress", (event) => {
                 // При нажатии Enter, вызвать функцию sendMessage
                 if (event.keyCode == 13) {
                     sendMessage();
@@ -61,13 +67,28 @@
     </script>
 </head>
 <body>
-    <!-- Интерфейс: имя, окно чата, текст сообщения -->
-    <b>Ваше Имя:</b>
-    <input id="name" type="text" placeholder="Ваше имя"/>
+    <div class="container">
+        <section id="brand">
+            <div id="dank_brand">
+                <img src="https://cdn.7tv.app/emote/61f1e78c1300d0c637b9872c/4x.webp" width="32" height="32" />
+                <p>peepoChat</p>
+            </div>
+            <div id="links">
+                <a href="https://github.com/greddyss/messanger">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+            </div>
+        </section>
 
-    <div id="chat_window"></div>
+        <section id="message_box">
+            <p>If you see this, vi von!</p>
+        </section>
 
-    <br/>
-    <input id="text" type="text" placeholder="Текст сообщения">
+        <section id="enter_box">
+            <input type="text" placeholder="My name is..." name="username" id="username_input">
+            <input type="text" placeholder="and I'm gonna say..." name="message" id="message_input"> 
+            <button type="button" onclick="sendMessage()">Send!</button>
+        </section>
+    </div>
 </body>
 </html>
