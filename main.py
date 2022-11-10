@@ -3,7 +3,7 @@ from flask import Flask, request, render_template
 from datetime import datetime
 import json
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates", static_folder="static")
 DATA_FILE = "data.json"
 
 
