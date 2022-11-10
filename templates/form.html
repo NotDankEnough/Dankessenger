@@ -11,6 +11,8 @@
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
         crossorigin="anonymous">
     </script>
+    <!-- Подключение библиотеки форм для jQuery запросов -->
+    <script src="https://malsup.github.io/jquery.form.js"></script>
 
     <!-- Код взаимодействия с сервером -->
     <script language="JavaScript">
@@ -26,7 +28,6 @@
                     var name = message["sender"];
                     var text = message["text"];
                     var time = message["time"];
-                    console.log(name, text, time);
                     var html = `<p id="message_row">
                         <span id="timestamp">[${time}]</span>
                 <span id="username">${name}</span>
@@ -45,7 +46,16 @@
         function sendMessage() {
             var name = $("#username_input").val(); // Кладем текст из поля "name" в переменную
             var text = $("#message_input").val();
-            $.get("/send_message", { "sender" : name, "text" : text});
+            
+            $("#send_form").ajaxForm({
+                dataType: "json",
+                success: (response) => {
+                    console.log(response.status)
+                },
+                error: (err) => {
+                    alert(`Retrieved error with ${err.responseJSON.status} status code!\nReason: ${err.responseJSON.message}`)
+                }
+            });
 
             $("#text").val("");
         }
@@ -85,9 +95,11 @@
         </section>
 
         <section id="enter_box">
-            <input type="text" placeholder="My name is..." name="username" id="username_input">
-            <input type="text" placeholder="and I'm gonna say..." name="message" id="message_input"> 
-            <button type="button" onclick="sendMessage()">Send!</button>
+            <form action="/send_message" method="post" enctype="multipart/form-data" id="send_form">
+                <input type="text" placeholder="My name is..." name="username" id="username_input">
+                <input type="text" placeholder="and I'm gonna say..." name="message" id="message_input"> 
+                <button type="submit" onclick="sendMessage()">Send!</button>
+            </form>
         </section>
     </div>
 </body>

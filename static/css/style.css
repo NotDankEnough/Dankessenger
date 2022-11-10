@@ -39,7 +39,7 @@ input:hover {
 }
 
 /* Buttons */
-button[type="button"] {
+button {
     background: linear-gradient(0deg, #72d444, #91ff5d);
     border-radius: 4px;
     border: #64924e solid 1px;
@@ -47,7 +47,7 @@ button[type="button"] {
     padding: 10px;
 }
 
-button[type="button"]:hover {
+button:hover {
     background: linear-gradient(180deg, #72d444, #91ff5d);
     cursor: pointer;
 }
@@ -100,7 +100,7 @@ p#message_row span#username {
 }
 
 /* Enter section */
-section#enter_box {
+section#enter_box form {
     display: flex;
     flex-direction: row;
 }

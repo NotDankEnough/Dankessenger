@@ -4,6 +4,7 @@ from datetime import datetime
 import json
 
 from src.utils.clear_html_tags import clear_html_tags
+from src.forms.MessageForm import MessageForm
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 DATA_FILE = "data.json"
@@ -57,13 +58,30 @@ def add_message(sender, text):
 
 
 # API для отправки соообщения
-@app.route("/send_message")
+@app.post("/send_message")
 def send_message():
-    sender = request.args["sender"]
-    text = request.args["text"]
-    add_message(sender, clear_html_tags(text))
+    # Message form:
+    FORM = MessageForm(request.form)
 
-    return {"result": True}
+    # Returns 400 if the user tries to send a request without a name or message.
+    if not FORM.validate():
+        return {
+            "data": None,
+            "status": 400,
+            "message": "Your form cannot be verified. You may not have filled out some fields, exceeded the limit, or not reached the minimum number of characters."
+        }, 400
+
+    # Save the message in storage:
+    add_message(FORM.username.data, clear_html_tags(FORM.message.data))
+
+    return {
+        "data": {
+            "username": FORM.username.data,
+            "message": FORM.message.data
+        },
+        "status": 200,
+        "message": "Successfully sent the message!"
+    }, 200
 
 
 # host 0.0.0.0 - сервер будет доступен на всех IP-адресах
