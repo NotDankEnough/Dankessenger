@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Skillbox Chat</title>
+    <title>peepoChat2</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
 
     <!-- Подключение библиотеки jQuery-->
@@ -30,7 +30,7 @@
                     var html = `<p id="message_row">
                         <span id="timestamp">[${time}]</span>
                 <span id="username">${name}</span>
-                says:
+                :
                 <span id="message">${text}</span>
                         </p>`;
                     var div = $(html); // div = визуальный элемент с сообщением
