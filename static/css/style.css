@@ -9,7 +9,7 @@ html, body, h1, h2, h3, p {
 
 /* Body */
 body {
-    background: #151515;
+    background: #393939;
     color: #fff;
 
     font-family: "Inter", sans-serif;
@@ -29,13 +29,13 @@ a:hover {
 input {
     padding: 10px;
     border-radius: 4px;
-    border: #808080 solid 1px;
-    background: #000;
-    color: #505050;
+    border: #4F4F4F solid 1px;
+    background: #5D5D5D;
+    color: #fff;
 }
 
 input:hover {
-    background: #111;
+    background: #4D4D4D;
 }
 
 /* Buttons */
@@ -77,7 +77,7 @@ section#brand #dank_brand { flex-grow: 1; }
 
 /* Section with messages */
 section#message_box {
-    background: #000;
+    background: #5D5D5D;
     border-radius: 6px;
     border: #505050 solid 1px;
     flex-grow: 1;
