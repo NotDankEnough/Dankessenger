@@ -31,8 +31,8 @@ def save_messages():
 
 
 @app.route("/")
-def hello_word():
-    return "<p>Messanger <b>peepoChat</b></p>"
+def index():
+    return render_template("form.html")
 
 
 # API для получения сообщения
@@ -64,11 +64,6 @@ def send_message():
     add_message(sender, clear_html_tags(text))
 
     return {"result": True}
-
-
-@app.route("/chat")
-def chat_page():
-    return render_template("form.html")
 
 
 # host 0.0.0.0 - сервер будет доступен на всех IP-адресах
