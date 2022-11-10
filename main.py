@@ -3,6 +3,8 @@ from flask import Flask, request, render_template
 from datetime import datetime
 import json
 
+from src.utils.clear_html_tags import clear_html_tags
+
 app = Flask(__name__, template_folder="templates", static_folder="static")
 DATA_FILE = "data.json"
 
@@ -59,7 +61,7 @@ def add_message(sender, text):
 def send_message():
     sender = request.args["sender"]
     text = request.args["text"]
-    add_message(sender, text)
+    add_message(sender, clear_html_tags(text))
 
     return {"result": True}
 
