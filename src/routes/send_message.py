@@ -14,7 +14,7 @@ def send_message():
     FORM = MessageForm(request.form)
 
     # Message timestamp:
-    TIMESTAMP = datetime.timestamp(datetime.now())
+    TIMESTAMP = datetime.timestamp(datetime.now()) * 1000
 
     # Message ID:
     ID = uuid4().hex
