@@ -22,21 +22,18 @@
             "/get_messages",
             (data) => {
                 $("#message_box").empty();
-                var messages = data["messages"];
-                for (var i in messages) {
-                    var message = messages[i];
-                    var name = message["sender"];
-                    var text = message["text"];
-                    var time = message["time"];
-                    var html = `<p id="message_row">
-                        <span id="timestamp">[${time}]</span>
-                <span id="username">${name}</span>
-                :
-                <span id="message">${text}</span>
-                        </p>`;
-                    var div = $(html); // div = визуальный элемент с сообщением
 
-                    $("#message_box").append(div);
+                for (var upd in data) {
+                    upd = data[upd];
+                    const date = new Date(parseFloat(upd.message.timestamp));
+                    $("#message_box").append(
+                    `<p class="message_row" id="${upd.message.id}">
+                        <span id="timestamp" title="${date.toUTCString()}">[${date.getUTCHours()}:${date.getUTCMinutes()}:${date.getUTCSeconds()}]</span>
+                        <span id="username">${upd.sender.username}</span>
+                        :
+                        <span id="message">${upd.message.text}</span>
+                    </p>`
+                    );
                 }
             }
            );
