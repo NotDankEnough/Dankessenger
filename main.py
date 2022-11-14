@@ -7,7 +7,7 @@ from src.routes.route_blueprint import blueprint
 app = Flask(__name__, template_folder="templates", static_folder="static")
 
 # Load the JSON to it's controller:
-JSONController.load("data.json")
+JSONController.load("data.json", [])
 
 # Register the routes for app:
 app.register_blueprint(blueprint)

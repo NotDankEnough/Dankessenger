@@ -7,14 +7,18 @@ class JSONController:
     latest_filepath: str = ""
     """Latest path to JSON file."""
 
-    content: dict[str, any] = {}
+    content: any
     """Content of latest JSON file."""
 
+    default_type: any
+    """Type of JSON content."""
+
     @classmethod
-    def load(cls, file_path: str) -> None:
+    def load(cls, file_path: str, default_type: dict | list) -> None:
         """Load and parse JSON content to Python dictionary."""
 
         if not exists(file_path):
+            cls.content = default_type
             cls.save(file_path)
             return
         
@@ -23,6 +27,7 @@ class JSONController:
             f.close()
         
         cls.latest_filepath = file_path
+        cls.default_type = type(default_type)
     
     @classmethod
     def save(cls, file_path: str) -> None:

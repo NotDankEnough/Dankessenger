@@ -40,7 +40,9 @@ def send_message():
     }
     
     # Save the message in storage:
-    JSONController.content[ID] = DATA
+    if JSONController.default_type == dict: JSONController.content["messages"].append(DATA)
+    elif JSONController.default_type == list: JSONController.content.append(DATA)
+
     JSONController.save(JSONController.latest_filepath)
 
     return {
