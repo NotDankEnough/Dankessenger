@@ -86,15 +86,15 @@ section#message_box {
 }
 
 /* Message */
-p#message_row {
+.message_row {
     margin: 2px 0;
 }
 
-p#message_row span#timestamp {
+.message_row span#timestamp {
     color: #9e9e9e;
 }
 
-p#message_row span#username {
+.message_row span#username {
     font-style: italic;
     font-weight: 700;
 }
