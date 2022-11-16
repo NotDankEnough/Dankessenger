@@ -1,17 +1,13 @@
-from flask import request
 from uuid import uuid4
 from datetime import datetime
 
-from .route_blueprint import blueprint
-from src.forms.MessageForm import MessageForm
+from src import socketio
 from src.utils.JSONController import JSONController
 
 
-@blueprint.post("/send_message")
-def send_message():
-    """POST route for handling a send message event."""
-    # Message form:
-    FORM = MessageForm(request.form)
+@socketio.on("say")
+def send_message(data):
+    """The event for send message."""
 
     # Message timestamp:
     TIMESTAMP = datetime.timestamp(datetime.now()) * 1000
@@ -20,20 +16,20 @@ def send_message():
     ID = uuid4().hex
 
     # Returns 400 if the user tries to send a request without a name or message:
-    if not FORM.validate():
-        return {
+    if data is None:
+        socketio.emit("message", {
             "data": None,
-            "status": 400,
-            "message": "Your form cannot be verified. You may not have filled out some fields, exceeded the limit, or not reached the minimum number of characters."
-        }, 400
+            "status": "You may not have filled out some fields, exceeded the limit, or not reached the minimum number of characters."
+        })
+        return
     
     # Message data:
     DATA = {
         "sender": {
-            "username": FORM.username.data
+            "username": data["sender_name"]
         },
         "message": {
-            "text": FORM.message.data,
+            "text": data["message"],
             "timestamp": str(TIMESTAMP),
             "id": ID
         }
@@ -45,8 +41,7 @@ def send_message():
 
     JSONController.save(JSONController.latest_filepath)
 
-    return {
+    socketio.emit("message", {
         "data": DATA,
-        "status": 200,
-        "message": "Successfully sent the message!"
-    }, 200
+        "status": "Successfully sent the message!"
+    })

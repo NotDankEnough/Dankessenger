@@ -14,63 +14,66 @@
     <!-- Подключение библиотеки форм для jQuery запросов -->
     <script src="https://malsup.github.io/jquery.form.js"></script>
 
+    <!-- Библиотека для подключения через веб-сокет -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
+
     <!-- Код взаимодействия с сервером -->
     <script language="JavaScript">
-        // Загрузка и отображение сообщений
-        function loadMessages() {
-           $.get(
-            "/get_messages",
-            (data) => {
-                $("#message_box").empty();
+        $(document).ready(() => {
+            var socket = io.connect("/")
 
-                for (var upd in data) {
-                    upd = data[upd];
-                    const date = new Date(parseFloat(upd.message.timestamp));
-                    $("#message_box").append(
-                    `<p class="message_row" id="${upd.message.id}">
-                        <span id="timestamp" title="${date.toUTCString()}">[${date.getUTCHours()}:${date.getUTCMinutes()}:${date.getUTCSeconds()}]</span>
-                        <span id="username">${upd.sender.username}</span>
-                        :
-                        <span id="message">${upd.message.text}</span>
-                    </p>`
-                    );
-                }
+            function sendMsg() {
+                socket.emit("say", {
+                    "message": $("#message_input").val(),
+                    "sender_name": $("#username_input").val()
+                });
             }
-           );
-        }
 
-        // Отправка сообщения
-        function sendMessage() {
-            var name = $("#username_input").val(); // Кладем текст из поля "name" в переменную
-            var text = $("#message_input").val();
-            
-            $("#send_form").ajaxForm({
-                dataType: "json",
-                success: (response) => {
-                    console.log(response.status)
-                },
-                error: (err) => {
-                    alert(`Retrieved error with ${err.responseJSON.status} status code!\nReason: ${err.responseJSON.message}`)
+            function formatMsg(data) {
+                const date = new Date(parseFloat(data.message.timestamp));
+
+                return `<p class="message_row" id="${data.message.id}">
+                        <span id="timestamp" title="${date.toUTCString()}">[${date.getUTCHours()}:${date.getUTCMinutes()}:${date.getUTCSeconds()}]</span>
+                        <span id="username">${data.sender.username}</span>:
+                        <span id="message">${data.message.text}</span>
+                    </p>`
+            }
+
+            socket.on("connect", () => {
+                socket.emit("join", {});
+            });
+
+            // Connected:
+            socket.on("joined", (msg, cb) => {
+                $("#message_box").empty();
+                $("#message_box").append(`<p>${msg.status}</p>`);
+
+                for (var upd in msg["chat_history"]) {
+                    upd = msg.chat_history[upd];
+                    $("#message_box").append(formatMsg(upd));
+                }
+
+                if (cb) cb();
+            });
+
+            // Message:
+            socket.on("message", (msg, cb) => {
+                $("#message_box").append(formatMsg(msg.data));
+                if (cb) cb();
+            });
+
+            // Send message:
+            $("#message_input").on("keypress", (e) => {
+                if (event.keyCode == 13) {
+                    sendMsg();
                 }
             });
 
-            $("#text").val("");
-        }
-
-        // При загрузке страницы
-        $(() => {
-           // При нажатии клавиш в поле текст
-           $("#message_input").on("keypress", (event) => {
-                // При нажатии Enter, вызвать функцию sendMessage
-                if (event.keyCode == 13) {
-                    sendMessage();
-                }
-           });
-
-           // Каждую секунду вызывать loadMessages
-           setInterval(loadMessages, 1000);
+            $("#send_form").submit((e) => {
+                e.preventDefault();
+                sendMsg();
+            });
         });
-
     </script>
 </head>
 <body>
@@ -92,10 +95,10 @@
         </section>
 
         <section id="enter_box">
-            <form action="/send_message" method="post" enctype="multipart/form-data" id="send_form">
+            <form id="send_form">
                 <input type="text" placeholder="My name is..." name="username" id="username_input">
                 <input type="text" placeholder="and I'm gonna say..." name="message" id="message_input"> 
-                <button type="submit" onclick="sendMessage()">Send!</button>
+                <button type="submit" id="message_submit">Send!</button>
             </form>
         </section>
     </div>
