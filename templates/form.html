@@ -19,6 +19,24 @@
 
     <!-- Код взаимодействия с сервером -->
     <script language="JavaScript">
+        function autoScroll() {
+            const $nm = $("#message_box")[0];
+            console.log($nm)
+
+            const nmStyle = getComputedStyle($nm);
+            const nmMargin = parseInt(nmStyle.marginBottom);
+            const nmHeight = $nm.offsetHeight + nmMargin;
+
+            const visHeight = $("#message_box")[0].offsetHeight;
+            const conHeight = $("#message_box")[0].scrollHeight;
+
+            const scrollOffset = $("#message_box")[0].scrollTop + visHeight;
+
+            if (conHeight - nmHeight <= scrollOffset) {
+                $("#message_box")[0].scrollTop = $("#message_box")[0].scrollHeight;
+            }
+        }
+
         $(document).ready(() => {
             var socket = io.connect("/")
 
@@ -59,6 +77,7 @@
             // Message:
             socket.on("message", (msg, cb) => {
                 $("#message_box").append(formatMsg(msg.data));
+                autoScroll();
                 if (cb) cb();
             });
 
