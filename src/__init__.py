@@ -12,7 +12,7 @@ def create_app() -> Flask:
     app = Flask(__name__, template_folder="../templates", static_folder="../static")
     app.debug = True
 
-    CORS(app)
+    CORS(app, allow_headers="*")
 
     from .routes.route_blueprint import blueprint
 
