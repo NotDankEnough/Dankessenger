@@ -71,6 +71,8 @@
                     $("#message_box").append(formatMsg(upd));
                 }
 
+                $("#message_box")[0].scrollTop = $("#message_box")[0].scrollHeight;
+
                 if (cb) cb();
             });
 
